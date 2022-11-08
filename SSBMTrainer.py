@@ -4,7 +4,7 @@ import melee
 import tkinter as tk
 from scenarios.RunningShine import RunningShine
 from scenarios.PSMarth import PSMarth
-from LaserFalco import LaserFalco
+from scenarios.LaserFalco import LaserFalco
 from PIL import ImageTk, Image
 
 event_num = 0
@@ -14,7 +14,7 @@ stacking_frame = tk.Frame(window)
 stacking_frame.pack()
 
 window.title("SSBM TRAINER v0.1")
-window.geometry('500x200')
+window.geometry('500x410')
 
 full_char_list = ["Dr.Mario","Mario","Luigi","Bowser","Peach","Yoshi","DK","C.Falcon","Ganondorf",
                   "Falco","Fox","Ness","Ice Climbers","Kirby","Samus","Zelda","Link","Y.Link",
@@ -29,18 +29,26 @@ def psmarth():
     event_num = 2
     window.destroy()
 
-header = ImageTk.PhotoImage(file = "./header.png")
+def laserfalco():
+    global event_num
+    event_num = 3
+    window.destroy()
+
+header = ImageTk.PhotoImage(file = "./txt/header.png")
 banner = tk.Label(image=header)
 banner.pack()
 
-photo = ImageTk.PhotoImage(file = "./running_shine.png")
+photo = ImageTk.PhotoImage(file = "./txt/running_shine.png")
 run_button = tk.Button(window, image=photo, command = runningshine)
 run_button.pack()
 
-photo2 = ImageTk.PhotoImage(file ="./psmarth.png")
+photo2 = ImageTk.PhotoImage(file ="./txt/psmarth.png")
 ps_button = tk.Button(window, image=photo2, command = psmarth)
-#ps_button.pack()
+ps_button.pack()
 
+photo3 = ImageTk.PhotoImage(file ="./txt/falcolaser.png")
+laser_button = tk.Button(window, image=photo3, command = laserfalco)
+laser_button.pack()
 
 tk.mainloop()
 
@@ -71,6 +79,10 @@ elif event_num == 2:
     agent1 = PSMarth(console, 1, 2, controller)
     character = melee.Character.MARTH
     stage = melee.Stage.FINAL_DESTINATION
+elif event_num == 3:
+    agent1 = LaserFalco(console, 1, 2, controller)
+    character = melee.Character.FALCO
+    stage = melee.Stage.POKEMON_STADIUM
 
 while True:
     gamestate = console.step()
