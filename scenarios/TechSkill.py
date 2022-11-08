@@ -2,10 +2,12 @@ import melee
 import random
 
 
-class TeckSkill():
+class TechSkill():
 
     def wavedash(gamestate, controller, direction, js):
-        if gamestate.players[1].action == melee.Action.STANDING:
+        if gamestate.players[1].action in [melee.Action.STANDING, melee.Action.DASHING, melee.Action.WALK_FAST,
+                                           melee.Action.WALK_SLOW, melee.Action.TURNING_RUN, melee.Action.RUNNING,
+                                           melee.Action.DOWN_B_GROUND_START, melee.Action.DOWN_B_GROUND]:
             controller.press_button(melee.Button.BUTTON_X)
             return
         elif gamestate.players[1].action == melee.Action.KNEE_BEND:
@@ -16,6 +18,8 @@ class TeckSkill():
         else:
             controller.release_all()
             return
+
+    def dashdance(gamestate, controller, dash, frame, max):
 
     def face_opponent(gamestate, controller):
         # 1 means the bot is to the right of the player, 2 means the bot is to the left of the player
@@ -33,3 +37,10 @@ class TeckSkill():
                 return
             else:
                 return
+
+    def power_sheild(gamestate, controller):
+        if melee.ProjectileType.FALCO_LASER in gamestate.projectiles:
+            controller.press_button(melee.Button.BUTTON_R)
+        else:
+            controller.release_button(melee.Button.BUTTON_R)
+            return

@@ -92,6 +92,8 @@ class RunningShine():
         else: # Else set escape variable to false
             self.escape = 0
 
+        edge_check()
+
         # Do nothing if in turn (standing turn or dash turn around)
         if gamestate.players[1].action == melee.Action.TURNING:
             self.controller.empty_input()
@@ -99,43 +101,34 @@ class RunningShine():
 
         # Wavedash Back
         # To call, set self.wd_back equal to 1, press jump, and loop back through
-        if self.wd_back == 1: # If on first frame of jumpsquat release x and increment
-            self.controller.release_button(melee.Button.BUTTON_X)
+        if self.wd_back > 0 and self.wd_back < 5:
             self.wd_back += 1
-        elif self.wd_back > 1 and self.wd_back < 4: # If jumpsquat not over, wait
-            self.wd_back += 1
-            return
-        elif self.wd_back == 4: # If first frame of actionable
-            if abs(gamestate.players[1].x) > (melee.stages.EDGE_GROUND_POSITION[gamestate.stage] - 10): # If too close to edge
-                self.controller.tilt_analog(melee.Button.BUTTON_MAIN, int(gamestate.players[1].x < 0), 0) # Wavedash away from edge
+            if abs(gamestate.players[1].x) > (melee.stages.EDGE_GROUND_POSITION[gamestate.stage] - 30):
+                near_left_ledge = gamestate.players[1].x < 0
+                TechSkill.wavedash(gamestate, self.controller, int(near_left_ledge), 3)
             else:
-                self.controller.tilt_analog(melee.Button.BUTTON_MAIN, int(not onRight), 0) # Else, wavedash towards
-            self.controller.press_button(melee.Button.BUTTON_R)
-            self.wd_back = -1
-            return
-        elif self.wd_back == -1:
-            self.controller.release_button(melee.Button.BUTTON_R)
+                TechSkill.wavedash(gamestate, self.controller, int(onRight), 3)
+        elif self.wd_back > 4:
             self.wd_back = 0
 
 
         # Code for handling the running shine from a dash dance
-        juke = random.randint(1,1000)
+        juke = random.randint(1,100)
         if self.runshine > 0 and gamestate.distance > 5:
-            if juke >= 980 and gamestate.distance > 20:
+            if juke >= 70 and gamestate.distance > 20:
                 self.controller.press_button(melee.Button.BUTTON_X)
                 self.wd_back = 1
                 self.runshine = 0
                 return
-            edge_check()
-            self.dash = int(not onRight)
-            self.controller.tilt_analog(melee.Button.BUTTON_MAIN, self.dash, 0.5)
-            self.runshine += 1
-            return
+            else:
+                self.dash = int(onRight)
+                self.controller.tilt_analog(melee.Button.BUTTON_MAIN, self.dash, 0.5)
+                self.runshine += 1
+                return
         elif self.runshine == -1:
             self.controller.release_button(melee.Button.BUTTON_B)
             self.runshine = 0
         elif gamestate.distance < 6:
-                edge_check()
                 self.runshine = -1
                 self.shinelag = 1
                 self.controller.tilt_analog(melee.Button.BUTTON_MAIN, 0.5, 0)
@@ -156,14 +149,9 @@ class RunningShine():
             return
         elif self.shinelag >= 4:
             self.shinelag = -1
-            if abs(gamestate.players[1].x) > (melee.stages.EDGE_GROUND_POSITION[gamestate.stage] - 10):
-                self.controller.tilt_analog(melee.Button.BUTTON_MAIN, int(gamestate.players[1].x < 0), 0)
-            else:
-                self.controller.tilt_analog(melee.Button.BUTTON_MAIN, int(not onRight), 0)
-            self.controller.press_button(melee.Button.BUTTON_R)
+            self.wd_back = 1
             return
         elif self.shinelag == -1:
-            self.controller.release_button(melee.Button.BUTTON_R)
             self.shinelag = 0
 
 
@@ -236,15 +224,15 @@ class RunningShine():
                 self.controller.tilt_analog(melee.Button.BUTTON_MAIN, self.dash, 0.5)
                 return
         elif gamestate.players[1].action == melee.Action.DASHING:
-            if gamestate.distance > 22 and shine > 86 \
-                    and abs(gamestate.players[2].x) > ( melee.stages.EDGE_GROUND_POSITION[gamestate.stage] - 6.6):
+            if gamestate.distance > 22 and shine > 86 and (abs(gamestate.players[2].x) >
+                                                           ( melee.stages.EDGE_GROUND_POSITION[gamestate.stage] - 6.6)):
                 self.runshine = 1
                 self.dash = int(not onRight)
                 self.controller.tilt_analog(melee.Button.BUTTON_MAIN, self.dash, 0.5)
                 return
             elif gamestate.players[1].action_frame == dashframe:
                 dashback()
-            elif gamestate.players[1].action == melee.Action.DASHING and gamestate.players[1].action_frame >= 10:
+            elif gamestate.players[1].action == melee.Action.DASHING and gamestate.players[1].action_frame >= 8:
                 dashback()
             else:
                 self.controller.tilt_analog(melee.Button.BUTTON_MAIN, self.dash, 0.5)
