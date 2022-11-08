@@ -15,3 +15,8 @@ attributes, decides it's own course of action and executes it.
 TechSkill.py - A class that defines methods, which when called frame by frame will perform a specific
 tech. Each method both checks if it can act, and acts, so if it should act is left to the caller. Import 
 in situation classes and call the methods with the character specific attributes 
+
+
+CURRENTLY:
+Three scenarios - Fox Running Shine, Marth Powersheild, Falco Laser
+(All three are broken lol)
