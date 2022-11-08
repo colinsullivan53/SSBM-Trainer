@@ -2,8 +2,8 @@ import sys
 
 import melee
 import tkinter as tk
-from RunningShine import RunningShine
-from PSMarth import PSMarth
+from scenarios.RunningShine import RunningShine
+from scenarios.PSMarth import PSMarth
 from LaserFalco import LaserFalco
 from PIL import ImageTk, Image
 
