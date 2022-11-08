@@ -19,7 +19,6 @@ class TechSkill():
             controller.release_all()
             return
 
-    def dashdance(gamestate, controller, dash, frame, max):
 
     def face_opponent(gamestate, controller):
         # 1 means the bot is to the right of the player, 2 means the bot is to the left of the player
