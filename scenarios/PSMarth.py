@@ -14,6 +14,8 @@ class PSMarth():
         self.ledge_roll = 0
         self.just_rolled = 0
 
+        self.RUNNNNN = 0
+
 
     def act(self, gamestate):
 
@@ -28,25 +30,42 @@ class PSMarth():
         elif self.ledge_roll == 1:
             self.controller.release_button(melee.Button.BUTTON_R)
 
-        if gamestate.players[1].x <= melee.stages.EDGE_GROUND_POSITION[gamestate.stage]:
-            if not gamestate.players[1].on_ground:
-                self.controller.tilt_analog(melee.Button.BUTTON_MAIN, 0.5, 0)
-                self.controller.press_button(melee.Button.BUTTON_B)
+        if self.RUNNNNN == 1:
+            if abs(gamestate.players[1].x) > melee.stages.EDGE_GROUND_POSITION[gamestate.stage] - 15:
+                onRight = gamestate.players[1].x > gamestate.players[2].x
+                left_side = gamestate.players[1].x < 0
+                if left_side and not onRight:
+                    self.controller.tilt_analog(melee.Button.BUTTON_MAIN, 1, 0.5)
+                elif not left_side and onRight:
+                    self.controller.tilt_analog(melee.Button.BUTTON_MAIN, 0, 0.5)
+                else:
+                    self.RUNNNNN = 0
+                return
+            return
+
+
+        if abs(gamestate.players[1].x) > melee.stages.EDGE_GROUND_POSITION[gamestate.stage] - 15:
+            self.RUNNNNN = 1
+            if gamestate.players[1].x < 0:
+                self.controller.tilt_analog(melee.Button.BUTTON_MAIN, 1, 0.5)
             else:
-                self.controller.release_button(melee.Button.BUTTON_B)
+                self.controller.tilt_analog(melee.Button.BUTTON_MAIN, 0, 0.5)
+            return
+
 
         # 1 means the bot is to the right of the player, 2 means the bot is to the left of the player
         onRight = gamestate.players[1].x > gamestate.players[2].x
-        if gamestate.distance > 95 and gamestate.players[2].on_ground:
-            TechSkill.wavedash(gamestate, self.controller, int(not onRight), 4)
-        elif gamestate.distance < 65 and gamestate.players[2].on_ground:
-            if abs(gamestate.players[1].x) > (melee.stages.EDGE_GROUND_POSITION[gamestate.stage] - 40):
-                near_left_ledge = gamestate.players[1].x < 0
-                TechSkill.wavedash(gamestate, self.controller, int(near_left_ledge), 4)
-            else:
-                TechSkill.wavedash(gamestate, self.controller, int(onRight), 4)
+        if gamestate.distance > 95:
+            #TechSkill.wavedash(gamestate, self.controller, int(not onRight), 4)
+            self.controller.tilt_analog(melee.Button.BUTTON_MAIN, int(not onRight), 0.5)
+            return
+        elif gamestate.distance < 65:
+            TechSkill.wavedash(gamestate, self.controller, int(onRight), 4)
+            return
         else:
-            self.controller.tilt_analog(melee.Button.BUTTON_MAIN, 0.5, 0)
             TechSkill.power_sheild(gamestate, self.controller)
+            self.controller.tilt_analog(melee.Button.BUTTON_MAIN, 0.5, 0)
+            return
+
 
         TechSkill.face_opponent(gamestate, self.controller)

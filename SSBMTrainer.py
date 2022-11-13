@@ -2,6 +2,7 @@ import os
 import sys
 import melee
 import tkinter as tk
+import pickle
 from tkinter import filedialog
 from scenarios.RunningShine import RunningShine
 from scenarios.PSMarth import PSMarth
@@ -9,21 +10,62 @@ from scenarios.LaserFalco import LaserFalco
 from PIL import ImageTk
 
 event_num = 0
+selected_melee = 0
+selected_dolphin = 0
+dolphinPath = ""
+meleePath = ""
 
 window = tk.Tk()
 path_frame = tk.Frame(window)
 
 window.title("SSBM TRAINER v0.1")
 window.geometry('500x410')
-
 window.after(2000, None)
+def save_data():
+    global data
+    data = {"Dolphin": dolphinPath, "Melee": meleePath}
+    with open('./txt/file.pickle', 'wb') as handle:
+        pickle.dump(data, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-window.directory = filedialog.askdirectory()
-dolphinPath = window.directory
+def dolphin_path():
+    window.directory = filedialog.askdirectory()
+    global dolphinPath
+    dolphinPath = window.directory
 
-file = filedialog.askopenfile(mode='r', filetypes=[('ISO', '*.iso')])
-if file:
-    meleePath = os.path.abspath(file.name)
+    global selected_dolphin
+    global selected_melee
+    selected_dolphin = 1
+    if selected_melee == 1:
+        path_frame.destroy()
+        save_data()
+
+def melee_path():
+    file = filedialog.askopenfile(mode='r', filetypes=[('ISO', '*.iso')])
+    if file:
+        global meleePath
+        meleePath = os.path.abspath(file.name)
+
+        global selected_dolphin
+        global selected_melee
+        selected_melee = 1
+        if selected_dolphin == 1:
+            path_frame.destroy()
+            save_data()
+
+if os.path.isfile("./txt/file.pickle"):
+    path_frame.destroy()
+    selected_dolphin = 1
+    selected_melee = 1
+    with open('./txt/file.pickle', 'rb') as handle:
+        data = pickle.load(handle)
+        meleePath = data["Melee"]
+        dolphinPath = data["Dolphin"]
+else:
+    dolphin_button = tk.Button(path_frame, text="Select Dolphin Path",command = dolphin_path)
+    dolphin_button.pack()
+    melee_button = tk.Button(path_frame, text="Select Melee Path", command = melee_path)
+    melee_button.pack()
+    path_frame.pack()
 
 full_char_list = ["Dr.Mario","Mario","Luigi","Bowser","Peach","Yoshi","DK","C.Falcon","Ganondorf",
                   "Falco","Fox","Ness","Ice Climbers","Kirby","Samus","Zelda","Link","Y.Link",
@@ -32,16 +74,19 @@ full_char_list = ["Dr.Mario","Mario","Luigi","Bowser","Peach","Yoshi","DK","C.Fa
 def runningshine():
     global event_num
     event_num = 1
-    window.destroy()
+    if selected_melee == 1 and selected_dolphin == 1:
+        window.destroy()
 def psmarth():
     global event_num
     event_num = 2
-    window.destroy()
+    if selected_melee == 1 and selected_dolphin == 1:
+       window.destroy()
 
 def laserfalco():
     global event_num
     event_num = 3
-    window.destroy()
+    if selected_melee == 1 and selected_dolphin == 1:
+       window.destroy()
 
 header = ImageTk.PhotoImage(file = "./txt/header.png")
 banner = tk.Label(image=header)
@@ -107,5 +152,5 @@ while True:
                                             character,
                                             stage,
                                             "",
-                                            autostart=True,
+                                            autostart=True,  
                                             swag=True)
