@@ -1,20 +1,29 @@
+import os
 import sys
-
 import melee
 import tkinter as tk
+from tkinter import filedialog
 from scenarios.RunningShine import RunningShine
 from scenarios.PSMarth import PSMarth
 from scenarios.LaserFalco import LaserFalco
-from PIL import ImageTk, Image
+from PIL import ImageTk
 
 event_num = 0
 
 window = tk.Tk()
-stacking_frame = tk.Frame(window)
-stacking_frame.pack()
+path_frame = tk.Frame(window)
 
 window.title("SSBM TRAINER v0.1")
 window.geometry('500x410')
+
+window.after(2000, None)
+
+window.directory = filedialog.askdirectory()
+dolphinPath = window.directory
+
+file = filedialog.askopenfile(mode='r', filetypes=[('ISO', '*.iso')])
+if file:
+    meleePath = os.path.abspath(file.name)
 
 full_char_list = ["Dr.Mario","Mario","Luigi","Bowser","Peach","Yoshi","DK","C.Falcon","Ganondorf",
                   "Falco","Fox","Ness","Ice Climbers","Kirby","Samus","Zelda","Link","Y.Link",
@@ -60,12 +69,14 @@ if event_num == 0:
 
 agent1 = None
 
-console = melee.Console(path="C:/Users/forum/AppData/Roaming/Slippi Launcher/netplay")
+#console = melee.Console(path="C:/Users/forum/AppData/Roaming/Slippi Launcher/netplay")
+console = melee.Console(path=dolphinPath)
 controller = melee.Controller(console=console, port=1)
 controller_human = melee.Controller(console=console, port=2,
                                     type=melee.ControllerType.GCN_ADAPTER)
 
-console.run("C:/Users/forum/Documents/roms/melee.iso")
+#console.run("C:/Users/forum/Documents/roms/melee.iso")
+console.run(meleePath)
 console.connect()
 
 controller.connect()
