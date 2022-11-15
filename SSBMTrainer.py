@@ -20,7 +20,6 @@ path_frame = tk.Frame(window)
 
 window.title("SSBM TRAINER v0.1")
 window.geometry('500x410')
-window.after(2000, None)
 def save_data():
     global data
     data = {"Dolphin": dolphinPath, "Melee": meleePath}
@@ -63,11 +62,17 @@ if os.path.isfile("./txt/file.pickle"):
         selected_melee = 1
     except:
         os.remove("./txt/file.pickle")
-        dolphin_button = tk.Button(path_frame, text="Select Dolphin Path",command = dolphin_path)
+        dolphin_button = tk.Button(path_frame, text="Select Dolphin Path", width=500, height=50, command=dolphin_path)
         dolphin_button.pack()
-        melee_button = tk.Button(path_frame, text="Select Melee Path", command = melee_path)
+        melee_button = tk.Button(path_frame, text="Select Melee Path", width=500, height=50, command=melee_path)
         melee_button.pack()
         path_frame.pack()
+else:
+    dolphin_button = tk.Button(path_frame, text="Select Dolphin Path", command=dolphin_path)
+    dolphin_button.pack()
+    melee_button = tk.Button(path_frame, text="Select Melee Path", command=melee_path)
+    melee_button.pack()
+    path_frame.pack()
 
 full_char_list = ["Dr.Mario","Mario","Luigi","Bowser","Peach","Yoshi","DK","C.Falcon","Ganondorf",
                   "Falco","Fox","Ness","Ice Climbers","Kirby","Samus","Zelda","Link","Y.Link",
