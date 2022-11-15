@@ -53,19 +53,20 @@ def melee_path():
             save_data()
 
 if os.path.isfile("./txt/file.pickle"):
-    path_frame.destroy()
-    selected_dolphin = 1
-    selected_melee = 1
-    with open('./txt/file.pickle', 'rb') as handle:
-        data = pickle.load(handle)
-        meleePath = data["Melee"]
-        dolphinPath = data["Dolphin"]
-else:
-    dolphin_button = tk.Button(path_frame, text="Select Dolphin Path",command = dolphin_path)
-    dolphin_button.pack()
-    melee_button = tk.Button(path_frame, text="Select Melee Path", command = melee_path)
-    melee_button.pack()
-    path_frame.pack()
+    try:
+        with open('./txt/file.pickle', 'rb') as handle:
+            data = pickle.load(handle)
+            meleePath = data["Melee"]
+            dolphinPath = data["Dolphin"]
+        path_frame.destroy()
+        selected_dolphin = 1
+        selected_melee = 1
+    except:
+        dolphin_button = tk.Button(path_frame, text="Select Dolphin Path",command = dolphin_path)
+        dolphin_button.pack()
+        melee_button = tk.Button(path_frame, text="Select Melee Path", command = melee_path)
+        melee_button.pack()
+        path_frame.pack()
 
 full_char_list = ["Dr.Mario","Mario","Luigi","Bowser","Peach","Yoshi","DK","C.Falcon","Ganondorf",
                   "Falco","Fox","Ness","Ice Climbers","Kirby","Samus","Zelda","Link","Y.Link",
@@ -114,13 +115,11 @@ if event_num == 0:
 
 agent1 = None
 
-#console = melee.Console(path="C:/Users/forum/AppData/Roaming/Slippi Launcher/netplay")
 console = melee.Console(path=dolphinPath)
 controller = melee.Controller(console=console, port=1)
-controller_human = melee.Controller(console=console, port=2,
-                                    type=melee.ControllerType.GCN_ADAPTER)
+controller_human = melee.Controller(console=console, port=2, type=melee.ControllerType.STANDARD)
+                                    #type=melee.ControllerType.GCN_ADAPTER)
 
-#console.run("C:/Users/forum/Documents/roms/melee.iso")
 console.run(meleePath)
 console.connect()
 
