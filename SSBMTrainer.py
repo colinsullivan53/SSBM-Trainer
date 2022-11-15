@@ -62,6 +62,7 @@ if os.path.isfile("./txt/file.pickle"):
         selected_dolphin = 1
         selected_melee = 1
     except:
+        os.remove("./txt/file.pickle")
         dolphin_button = tk.Button(path_frame, text="Select Dolphin Path",command = dolphin_path)
         dolphin_button.pack()
         melee_button = tk.Button(path_frame, text="Select Melee Path", command = melee_path)
@@ -117,8 +118,7 @@ agent1 = None
 
 console = melee.Console(path=dolphinPath)
 controller = melee.Controller(console=console, port=1)
-controller_human = melee.Controller(console=console, port=2, type=melee.ControllerType.STANDARD)
-                                    #type=melee.ControllerType.GCN_ADAPTER)
+controller_human = melee.Controller(console=console, port=2, type=melee.ControllerType.GCN_ADAPTER)
 
 console.run(meleePath)
 console.connect()
@@ -146,10 +146,7 @@ while True:
         agent1.act(gamestate)
         controller.flush()
     else:
-        melee.MenuHelper.menu_helper_simple(gamestate,
-                                            controller,
-                                            character,
-                                            stage,
-                                            "",
-                                            autostart=True,  
-                                            swag=True)
+        try:
+            melee.MenuHelper.menu_helper_simple(gamestate, controller, character, stage, "", autostart=True, swag=True)
+        except:
+            break;
