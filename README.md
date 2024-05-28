@@ -1,8 +1,6 @@
 # SSBM-Trainer
 A Melee Training Pack with reactive AI using Smashbot's libmelee python library
-BY Colin Sullivan - Playittillyouwin
 
-CODE TLDR:
 
 SSBMTrainer.py - Runner class that starts the GUI and takes a user button click to select which
 scenario file to initialize. Also initializes console and controllers and does while(True) frame
