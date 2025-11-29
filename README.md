@@ -17,4 +17,3 @@ in situation classes and call the methods with the character specific attributes
 
 CURRENTLY:
 Three scenarios - Fox Running Shine, Marth Powersheild, Falco Laser
-(All three are broken lol)
